@@ -1,8 +1,8 @@
 // MI-PROYECTO-MERN/backend/controllers/auth.controller.js
 
-const asyncHandler = require('express-async-handler');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User.model');
+import asyncHandler from 'express-async-handler';
+import jwt from 'jsonwebtoken';
+import User from '../models/usuario.js';
 
 // --- Helper: Generar JWT ---
 // Centralizamos la creación del token para reutilizar
@@ -16,35 +16,34 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { nombre, correo, contraseña } = req.body;
 
     // 1. Validar si el usuario ya existe
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ correo });
 
     if (userExists) {
         res.status(400); // Bad Request
-        throw new Error('El socio ya está registrado con ese email.');
+        throw new Error('El usuario ya está registrado con ese correo.');
     }
 
     // 2. Crear el nuevo usuario (el hash se hace en el middleware del modelo)
     const user = await User.create({
-        name,
-        email,
-        password,
-        // Rol por defecto es 'member'
+        nombre,
+        correo,
+        contraseña,
     });
 
     if (user) {
         res.status(201).json({ // Created
             _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            nombre: user.nombre,
+            correo: user.correo,
+            rol: user.rol,
             token: generateToken(user._id),
         });
     } else {
         res.status(400);
-        throw new Error('Datos de socio inválidos.');
+        throw new Error('Datos de usuario inválidos.');
     }
 });
 
@@ -52,29 +51,27 @@ const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/auth/login
 // @access  Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body;
+    const { correo, contraseña } = req.body;
 
-    // 1. Buscar usuario por email, incluyendo la contraseña para la validación
-    // .select('+password') es necesario porque en el modelo pusimos 'select: false'
-    const user = await User.findOne({ email }).select('+password');
+    // 1. Buscar usuario por correo, incluyendo la contraseña para la validación
+    const user = await User.findOne({ correo }).select('+contraseña');
 
     // 2. Validar la existencia del usuario y la contraseña
-    // user.matchPassword es el método que definimos en User.model.js
-    if (user && (await user.matchPassword(password))) {
+    if (user && (await user.matchPassword(contraseña))) {
         res.json({
             _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
+            nombre: user.nombre,
+            correo: user.correo,
+            rol: user.rol,
             token: generateToken(user._id),
         });
     } else {
         res.status(401); // Unauthorized
-        throw new Error('Credenciales inválidas (email o contraseña incorrectos).');
+        throw new Error('Credenciales inválidas (correo o contraseña incorrectos).');
     }
 });
 
-module.exports = {
+export {
     registerUser,
     loginUser,
 };

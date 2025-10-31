@@ -11,6 +11,7 @@ import routes4 from './routes/index5.js';
 
 // ✅ Nueva ruta de autenticación (como en el segundo código)
 import authRoutes from './routes/auth.routes.js';
+import userRoutes from './routes/user.routes.js';
 
 // conexión
 import { conectarDB, dbStatus } from './config/db.js';
@@ -38,6 +39,9 @@ app.use('/api/personalizaciones', routes4.personalizacionesRoutes);
 // ✅ Nueva ruta de autenticación
 app.use('/api/auth', authRoutes);
 
+// ✅ Rutas protegidas para usuarios
+app.use('/api/users', userRoutes);
+
 // ✅ Ruta raíz mejorada
 app.get('/', (req, res) => {
     if (dbStatus === 'conectado') {
@@ -60,8 +64,18 @@ app.get('/', (req, res) => {
 // import errorHandler from './middleware/error.middleware.js';
 // app.use(errorHandler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`✅ Servidor Express escuchando en http://localhost:${port}`);
+});
+
+// Manejo explícito de errores en el servidor (por ejemplo, puerto ocupado)
+server.on('error', (err) => {
+    if (err && err.code === 'EADDRINUSE') {
+        console.error(`❌ Error: el puerto ${port} está en uso. Libera el puerto o cambia PORT en tu .env (por ejemplo PORT=4000).`);
+        process.exit(1);
+    }
+    console.error('Server error:', err);
+    process.exit(1);
 });
 
  

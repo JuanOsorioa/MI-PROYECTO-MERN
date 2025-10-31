@@ -1,8 +1,13 @@
 // MI-PROYECTO-MERN/backend/routes/auth.routes.js
 
-const express = require('express');
+import express from 'express';
+// El controlador actualmente usa CommonJS (module.exports = { ... }).
+// Al importar un módulo CommonJS desde ESM, se obtiene el objeto `module.exports`
+// como la exportación por defecto, así que lo importamos por defecto y
+// desestructuramos las funciones que necesitamos.
+import { registerUser, loginUser } from '../controllers/auth.controller.js';
+
 const router = express.Router();
-const { registerUser, loginUser } = require('../controllers/auth.controller');
 
 // Ruta para crear un nuevo socio
 router.post('/register', registerUser);
@@ -10,4 +15,4 @@ router.post('/register', registerUser);
 // Ruta para iniciar sesión
 router.post('/login', loginUser);
 
-module.exports = router;
+export default router;
