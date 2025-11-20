@@ -20,7 +20,7 @@ dotenv.config();
 console.log('🔗 Conectando a MongoDB URI:', process.env.MONGO_URI);
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 
 // ✅ Conexión a la base de datos
 conectarDB();

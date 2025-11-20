@@ -2,11 +2,8 @@
 
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // 🚨 Importar Axios
+import apiClient from '../api/apiClient';
 import { AuthContext } from '../context/AuthContext';
-
-// Define la URL base de tu API de Express
-const API_URL = 'http://localhost:5000/api/auth/login';
 
 const LoginPage = () => {
     // 1. Obtener la función 'login' del contexto
@@ -28,8 +25,8 @@ const LoginPage = () => {
         setIsLoading(true);
 
         try {
-            // 🚨 Llamada al Backend con Axios
-            const response = await axios.post(API_URL, {
+            // Llamada al Backend usando la instancia `apiClient`
+            const response = await apiClient.post('/auth/login', {
                 email,
                 password,
             });
