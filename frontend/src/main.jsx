@@ -1,17 +1,19 @@
-// frontend/src/main.jsx
+// frontend/src/main.jsx (Actualizado)
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom'; // 🚨 Importar
+import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
-// Ya no usamos ningún archivo CSS, por eso los eliminamos.
-// import './index.css'; 
+// 🚨 Importar el proveedor de contexto
+import { AuthContextProvider } from './context/AuthContext.jsx'; 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    {/* BrowserRouter permite que React Router funcione y escuche los cambios de URL */}
     <BrowserRouter>
-      <App />
+        {/* 🚨 Envolver toda la aplicación para que todos los componentes tengan acceso al contexto */}
+        <AuthContextProvider> 
+            <App />
+        </AuthContextProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

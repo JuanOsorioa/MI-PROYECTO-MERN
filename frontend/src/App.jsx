@@ -1,31 +1,28 @@
-// frontend/src/App.jsx
+// frontend/src/App.jsx (Actualizado con PrivateRoute)
 
-import { Routes, Route } from 'react-router-dom'; // 🚨 Importar componentes de rutas
-
-// Importar los componentes de páginas
+import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-
-// Definiremos un DashboardPage más adelante, por ahora la omitimos.
-// import DashboardPage from './pages/DashboardPage';
+import DashboardPage from './pages/DashboardPage'; // 🚨 Nuevo
+import PrivateRoute from './components/PrivateRoute'; // 🚨 Nuevo
 
 const App = () => {
   return (
     <div className="App">
-      {/* Aquí podemos añadir un <Navbar /> o un <Footer /> que se mostrarán en todas las páginas */}
-      
-      {/* Routes define el área donde se renderizarán los componentes de ruta */}
       <Routes>
         {/* Rutas Públicas */}
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Ejemplo de una ruta que usaremos más adelante (Ruta Protegida) */}
-        {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
+        {/* 🚨 Ruta Protegida: Usamos PrivateRoute como elemento padre */}
+        <Route element={<PrivateRoute />}>
+            {/* Si el usuario está autenticado, se renderiza el Outlet (DashboardPage) */}
+            <Route path="/dashboard" element={<DashboardPage />} />
+            {/* Aquí irán otras rutas privadas: /transactions, /admin, etc. */}
+        </Route>
 
-        {/* Ruta comodín para manejar URL's no encontradas (404) */}
         <Route path="*" element={<h1>404: Página no encontrada</h1>} />
       </Routes>
     </div>
